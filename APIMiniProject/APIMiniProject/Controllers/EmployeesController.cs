@@ -40,16 +40,16 @@ public class EmployeesController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutEmployee(int id, Employee employee)
     {
-        if (id != employee.EmployeeId)
-        {
-            return BadRequest();
-        }
+        if (id != employee.EmployeeId) return BadRequest();
+        if (!EmployeeExists(id)) return NotFound();
 
-        _employeeService.Entry(employee).State = EntityState.Modified;
+        var emp = await _employeeService.FindByIdAsync(id);
+
+        _employeeService.ModifyState(employee);
 
         try
         {
-            await _employeeService.SaveChangesAsync();
+            await _employeeService.SaveEmployeeChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -71,9 +71,7 @@ public class EmployeesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<EmployeeDTO>> PostEmployee(Employee employee)
     {
-        _employeeService.Employees.Add(employee);
-        await _employeeService.SaveChangesAsync();
-
+        await _employeeService.CreateEmployeeAsync(employee);
         return CreatedAtAction("GetEmployee", new { id = employee.EmployeeId }, employee);
     }
 
@@ -81,20 +79,18 @@ public class EmployeesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteEmployee(int id)
     {
-        var employee = await _employeeService.Employees.FindAsync(id);
+        var employee = await _employeeService.FindByIdAsync(id);
         if (employee == null)
         {
             return NotFound();
         }
 
-        _employeeService.Employees.Remove(employee);
-        await _employeeService.SaveChangesAsync();
-
+        await _employeeService.DeleteEmployeeAsync(id);
         return NoContent();
     }
 
     private bool EmployeeExists(int id)
     {
-        return _employeeService.Employees.Any(e => e.EmployeeId == id);
+        return _employeeService.EmployeeExists(id);
     }
 }
