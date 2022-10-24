@@ -1,4 +1,5 @@
 ﻿using APIMiniProject.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace APIMiniProject.Services;
 
@@ -8,83 +9,81 @@ public class EmployeeService : IEmployeeService
     public EmployeeService() => _context = new NorthwindContext();
     public EmployeeService(NorthwindContext context) => _context = context;
     
-    public int CreateEmployee(Employee employeeDTO)
+    public int CreateEmployee(Employee employee)
     {
-        throw new NotImplementedException();
+        _context.Employees.Add(employee);
+        _context.SaveChanges();
+        return employee.EmployeeId;
     }
 
-    public Task<int> CreateEmployeeAsync(Employee employeeDTO)
+    public async Task<int> CreateEmployeeAsync(Employee employee)
     {
-        throw new NotImplementedException();
+        _context.Employees.Add(employee);
+        await _context.SaveChangesAsync();
+        return employee.EmployeeId;
     }
 
     public void DeleteEmployee(int id)
     {
-        throw new NotImplementedException();
+        _context.Employees.Remove(FindById(id));
+        _context.SaveChanges();
     }
 
-    public Task DeleteEmployeeAsync(int id)
+    public async Task DeleteEmployeeAsync(int id)
     {
-        throw new NotImplementedException();
+        _context.Employees.Remove(FindById(id));
+        await _context.SaveChangesAsync();
     }
 
-    public bool EmployeeExists(int id)
+    public bool EmployeeExists(int id) => _context.Employees.Any(x => x.EmployeeId == id);
+    
+    public async Task<bool> EmployeeExistsAsync(int id)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> EmployeeExistsAsync(int id)
-    {
-        throw new NotImplementedException();
+        var result = await _context.Employees.FindAsync(id);
+        return result != null;
     }
 
     public Employee FindById(int id)
     {
-        throw new NotImplementedException();
+        return _context.Employees.Find(id);
     }
 
-    public Task<Employee> FindByIdAsync(int id)
+    public async Task<Employee> FindByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return await _context.Employees
+                .Where(e => e.EmployeeId == id)
+                .FirstOrDefaultAsync();
     }
 
     public List<Employee> GetAllEmployees()
     {
-        throw new NotImplementedException();
+        return _context.Employees.ToList();
     }
 
-    public Task<IEnumerable<Employee>> GetAllEmployeesAsync()
+    public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
     {
-        throw new NotImplementedException();
+        return await _context.Employees.ToListAsync();
     }
 
     public List<Territory> GetAllTerritoryFromOneEmployee(int id)
     {
-        throw new NotImplementedException();
+        var emp = FindById(id);
+        return emp.Territories.ToList();
     }
 
-    public Task<IEnumerable<Territory>> GetAllTerritoryFromOneEmployeeAsync(int id)
+    public async Task<IEnumerable<Territory>> GetAllTerritoryFromOneEmployeeAsync(int id)
     {
-        throw new NotImplementedException();
-    }
-
-    public Employee ReportsTo(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Employee> ReportsToAsync(int id)
-    {
-        throw new NotImplementedException();
+        var emp = await FindByIdAsync(id);
+        return emp.Territories.ToList();
     }
 
     public void SaveEmployeeChanges()
     {
-        throw new NotImplementedException();
+        _context.SaveChanges();
     }
 
-    public Task SaveEmployeeChangesAsync()
+    public async Task SaveEmployeeChangesAsync()
     {
-        throw new NotImplementedException();
+        await _context.SaveChangesAsync();
     }
 }

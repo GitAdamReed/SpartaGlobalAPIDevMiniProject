@@ -13,8 +13,8 @@ public interface IEmployeeService
     Task<Employee> FindByIdAsync(int id);
 
     //Create Employees - Returns ID of Employee.
-    int CreateEmployee(Employee employeeDTO); 
-    Task<int> CreateEmployeeAsync(Employee employeeDTO);
+    int CreateEmployee(Employee employee); 
+    Task<int> CreateEmployeeAsync(Employee employee);
 
     //Delete Employee
     void DeleteEmployee(int id);
@@ -27,10 +27,6 @@ public interface IEmployeeService
     //List of an Employee with all their terriories.
     List<Territory> GetAllTerritoryFromOneEmployee(int id);
     Task<IEnumerable<Territory>> GetAllTerritoryFromOneEmployeeAsync(int id);
-
-    //Reports To
-    Employee ReportsTo(int id);
-    Task<Employee> ReportsToAsync(int id);
 
     //Save Employee
     void SaveEmployeeChanges();
