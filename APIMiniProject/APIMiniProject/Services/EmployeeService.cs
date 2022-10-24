@@ -87,7 +87,7 @@ public class EmployeeService : IEmployeeService
         await _context.SaveChangesAsync();
     }
 
-    void ModifyState(Employee employee)
+    public void ModifyState(Employee employee)
     {
        _context.Entry(employee).State = EntityState.Modified;
     }
