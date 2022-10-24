@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using APIMiniProject.Models;
 using APIMiniProject.Services;
+using APIMiniProject.Models.DTOs;
 
 namespace APIMiniProject.Controllers;
 
@@ -18,9 +19,11 @@ public class EmployeesController : ControllerBase
 
     // GET: api/Employees
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+    public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetEmployees()
     {
-        return await _employeeService.Employees.ToListAsync();
+        var employees = await _employeeService.GetAllEmployeesAsync();
+        var employeesDto = employees.Select(s => Utils.EmployeeToEmployeeDTO(s)).ToList();
+        return employeesDto;
     }
 
     // GET: api/Employees/5
