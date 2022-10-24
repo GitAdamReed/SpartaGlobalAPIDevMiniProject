@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using APIMiniProject.Models;
 using APIMiniProject.Services;
+using APIMiniProject.Models.DTOs;
 
 namespace APIMiniProject.Controllers;
 
@@ -18,17 +19,16 @@ public class EmployeesController : ControllerBase
 
     // GET: api/Employees
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+    public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetEmployees()
     {
-        return await _employeeService.Employees.ToListAsync();
+        return new(await _employeeService.GetAllEmployeesAsync());
     }
 
     // GET: api/Employees/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<Employee>> GetEmployee(int id)
+    public async Task<ActionResult<EmployeeDTO>> GetEmployee(int id)
     {
-        var employee = await _employeeService.Employees.FindAsync(id);
-
+        var employee = await _employeeService.FindByIdAsync(id);
         if (employee == null) return NotFound();
         return employee;
     }
@@ -67,7 +67,7 @@ public class EmployeesController : ControllerBase
     // POST: api/Employees
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+    public async Task<ActionResult<EmployeeDTO>> PostEmployee(Employee employee)
     {
         _employeeService.Employees.Add(employee);
         await _employeeService.SaveChangesAsync();
