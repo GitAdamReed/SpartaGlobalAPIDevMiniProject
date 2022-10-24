@@ -1,4 +1,5 @@
 using APIMiniProject.Models;
+using APIMiniProject.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<NorthwindContext>(opt => opt.UseSqlServer(builder.Configuration["default"]));
 builder.Services.AddDbContext<NorthwindContext>(opt => opt.UseInMemoryDatabase("Northwind"));
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 //Optional
 builder.Services.AddControllersWithViews()

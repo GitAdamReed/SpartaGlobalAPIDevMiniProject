@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using APIMiniProject.Models;
+using APIMiniProject.Services;
 
 namespace APIMiniProject.Controllers;
 
@@ -8,25 +9,25 @@ namespace APIMiniProject.Controllers;
 [ApiController]
 public class EmployeesController : ControllerBase
 {
-    private readonly NorthwindContext _context;
+    private readonly IEmployeeService _employeeService;
 
-    public EmployeesController(NorthwindContext context)
+    public EmployeesController(IEmployeeService supplierService)
     {
-        _context = context;
+        _employeeService = supplierService;
     }
 
     // GET: api/Employees
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
     {
-        return await _context.Employees.ToListAsync();
+        return await _employeeService.Employees.ToListAsync();
     }
 
     // GET: api/Employees/5
     [HttpGet("{id}")]
     public async Task<ActionResult<Employee>> GetEmployee(int id)
     {
-        var employee = await _context.Employees.FindAsync(id);
+        var employee = await _employeeService.Employees.FindAsync(id);
 
         if (employee == null) return NotFound();
         return employee;
@@ -42,11 +43,11 @@ public class EmployeesController : ControllerBase
             return BadRequest();
         }
 
-        _context.Entry(employee).State = EntityState.Modified;
+        _employeeService.Entry(employee).State = EntityState.Modified;
 
         try
         {
-            await _context.SaveChangesAsync();
+            await _employeeService.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -68,8 +69,8 @@ public class EmployeesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
     {
-        _context.Employees.Add(employee);
-        await _context.SaveChangesAsync();
+        _employeeService.Employees.Add(employee);
+        await _employeeService.SaveChangesAsync();
 
         return CreatedAtAction("GetEmployee", new { id = employee.EmployeeId }, employee);
     }
@@ -78,20 +79,20 @@ public class EmployeesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteEmployee(int id)
     {
-        var employee = await _context.Employees.FindAsync(id);
+        var employee = await _employeeService.Employees.FindAsync(id);
         if (employee == null)
         {
             return NotFound();
         }
 
-        _context.Employees.Remove(employee);
-        await _context.SaveChangesAsync();
+        _employeeService.Employees.Remove(employee);
+        await _employeeService.SaveChangesAsync();
 
         return NoContent();
     }
 
     private bool EmployeeExists(int id)
     {
-        return _context.Employees.Any(e => e.EmployeeId == id);
+        return _employeeService.Employees.Any(e => e.EmployeeId == id);
     }
 }
