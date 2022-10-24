@@ -32,7 +32,7 @@ public class EmployeesController : ControllerBase
     {
         var employee = await _employeeService.FindByIdAsync(id);
         if (employee == null) return NotFound();
-        return employee;
+        return Utils.EmployeeToEmployeeDTO(employee);
     }
 
     // PUT: api/Employees/5
