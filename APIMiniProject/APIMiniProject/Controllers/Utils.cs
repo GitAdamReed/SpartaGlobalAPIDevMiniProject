@@ -41,7 +41,7 @@ public class Utils
         DateTime today = DateTime.Today;
         var diff = today.Year - e.BirthDate.Value.Year;
         var birthday = e.BirthDate.Value.AddYears(diff);
-        if (birthday > today) birthday = birthday.AddYears(1);
+        if (birthday < today) birthday = birthday.AddYears(1);
         return birthday;
     }
 }
