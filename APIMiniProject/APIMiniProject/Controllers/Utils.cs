@@ -26,4 +26,22 @@ public class Utils
             ReportsTo = employee.ReportsTo,
             Territories = employee.Territories
         };
+
+    public static BirthdayDTO EmployeeToBirthdayDTO(Employee employee) =>
+       new BirthdayDTO
+       {
+           FirstName = employee.FirstName,
+           LastName = employee.LastName,
+           BirthDate = employee.BirthDate,
+           UpcomingBirthdate = GetUpcomingBirthdate(employee)
+       };
+
+    private static DateTime GetUpcomingBirthdate(Employee e)
+    {
+        DateTime today = DateTime.Today;
+        var diff = today.Year - e.BirthDate.Value.Year;
+        var birthday = e.BirthDate.Value.AddYears(diff);
+        if (birthday > today) birthday = birthday.AddYears(1);
+        return birthday;
+    }
 }
