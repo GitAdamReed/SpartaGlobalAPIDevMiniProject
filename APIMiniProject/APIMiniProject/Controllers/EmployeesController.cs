@@ -21,7 +21,9 @@ public class EmployeesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetEmployees()
     {
-        return new(await _employeeService.GetAllEmployeesAsync());
+        var employees = await _employeeService.GetAllEmployeesAsync();
+        var employeesDto = employees.Select(s => Utils.EmployeeToEmployeeDTO(s)).ToList();
+        return employeesDto;
     }
 
     // GET: api/Employees/5
