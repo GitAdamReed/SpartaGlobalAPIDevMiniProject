@@ -31,4 +31,7 @@ public interface IEmployeeService
     //Save Employee
     void SaveEmployeeChanges();
     Task SaveEmployeeChangesAsync();
+
+    // Entry Method
+    void ModifyState(Employee employee);
 }
