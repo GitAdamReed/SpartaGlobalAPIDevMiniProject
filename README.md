@@ -31,7 +31,7 @@ Overall, working with my group allowed me to learn a lot and I would love to do 
 ```
 ### Robert
 ```
-
+This project helped to solidify my knowledge of APIs and LINQ methods. I helped to implement the birthday requst by creating a BirthdayDTO with only fields relating to employees age and thier birthday.
 ```
 
 <br>
