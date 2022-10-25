@@ -27,6 +27,13 @@ public class EmployeesController : ControllerBase
         return employeesDto;
     }
 
+    // GET: api/Employees
+    [HttpGet("Navigation")]
+    public ActionResult<string> GetNavigation()
+    {
+        return Utils.DisplayWelcome();
+    }
+
     // GET: api/Employees/5
     [HttpGet("{id}")]
     public async Task<ActionResult<EmployeeDTO>> GetEmployee(int id)
