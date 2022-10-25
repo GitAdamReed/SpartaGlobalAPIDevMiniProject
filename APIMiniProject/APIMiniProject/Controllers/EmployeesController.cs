@@ -94,7 +94,7 @@ public class EmployeesController : ControllerBase
         return _employeeService.EmployeeExists(id);
     }
 
-    [HttpGet("GetBirthdaysNearest")]
+    [HttpGet("Birthdays")]
     public async Task<ActionResult<IEnumerable<BirthdayDTO>>> GetBirthdaysNearest()
     {
         DateTime today = DateTime.Today;
@@ -103,7 +103,7 @@ public class EmployeesController : ControllerBase
         var allEmps = _employeeService.GetAllEmployeesAsync().Result.ToList();
 
         var empsBirthday = allEmps.Select(s => Utils.EmployeeToBirthdayDTO(s)).ToList();
-        var ordered = empsBirthday.OrderBy(e => e.UpcomingBirthdate).ToList();
+        var ordered = empsBirthday.OrderBy(e => e.UpcomingBirthday).ToList();
         return ordered;
     }
 }

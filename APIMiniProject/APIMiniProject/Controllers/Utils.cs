@@ -33,10 +33,10 @@ public class Utils
            FirstName = employee.FirstName,
            LastName = employee.LastName,
            BirthDate = employee.BirthDate,
-           UpcomingBirthdate = GetUpcomingBirthdate(employee)
+           UpcomingBirthday = GetUpcomingBirthday(employee)
        };
 
-    private static DateTime GetUpcomingBirthdate(Employee e)
+    private static DateTime GetUpcomingBirthday(Employee e)
     {
         DateTime today = DateTime.Today;
         var diff = today.Year - e.BirthDate.Value.Year;
