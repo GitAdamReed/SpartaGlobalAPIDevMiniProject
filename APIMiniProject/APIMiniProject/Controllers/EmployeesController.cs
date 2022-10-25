@@ -107,7 +107,6 @@ public class EmployeesController : ControllerBase
         employeeToChange.Extension = employee.Extension ?? employeeToChange.Extension;
         employeeToChange.Notes = employee.Notes ?? employeeToChange.Notes;
         employeeToChange.ReportsTo = employee.ReportsTo ?? employeeToChange.ReportsTo;
-        //employeeToChange.Territories = employee.Territories.Select(t => Utils.TerritoryToDTO(t));
 
         try
         {
