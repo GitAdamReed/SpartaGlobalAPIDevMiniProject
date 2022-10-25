@@ -9,18 +9,16 @@ public class EmployeeService : IEmployeeService
     public EmployeeService() => _context = new NorthwindContext();
     public EmployeeService(NorthwindContext context) => _context = context;
     
-    public int CreateEmployee(Employee employee)
+    public void CreateEmployee(Employee employee) //Should be void or bool
     {
         _context.Employees.Add(employee);
         _context.SaveChanges();
-        return employee.EmployeeId;
     }
 
-    public async Task<int> CreateEmployeeAsync(Employee employee)
+    public async Task CreateEmployeeAsync(Employee employee)
     {
         _context.Employees.Add(employee);
         await _context.SaveChangesAsync();
-        return employee.EmployeeId;
     }
 
     public void DeleteEmployee(int id)

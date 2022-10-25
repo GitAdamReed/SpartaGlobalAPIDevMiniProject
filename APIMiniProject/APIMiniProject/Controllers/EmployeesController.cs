@@ -94,25 +94,36 @@ public class EmployeesController : ControllerBase
         return _employeeService.EmployeeExists(id);
     }
 
-    [HttpGet("GetBirthdaysNearest")]
-    public async Task<ActionResult<IEnumerable<DateTime>>> GetBirthdaysNearest()
+    [HttpGet("GetTheNearestBirthday")]
+    public ActionResult<object> GetTheNearestBirthday()
     {
-        DateTime employeeBirthday, closestBirthday;
-        DateTime today = DateTime.Today;
-
-        long closestDisctance, difference;
-
-        var birthdaysList = new List<DateTime>();
+        //Get all the employees.
         var allEmps = _employeeService.GetAllEmployeesAsync().Result.ToList();
-
-        foreach(var e in allEmps)
+        //Get their birthdays.
+        var birthdaysList = new List<int>();
+        foreach (var e in allEmps)
         {
-            difference = Math.Abs(e.BirthDate.Value.Ticks - today.Ticks);
+            var birthday = (DateTime)e.BirthDate;
+            birthdaysList.Add(birthday.DayOfYear); //100, 56, 88, 251, ...
         }
-
-        allEmps.ForEach(e => birthdaysList.Add((DateTime)e.BirthDate));
-        birthdaysList.OrderByDescending(dt => dt.DayOfYear);
-
-        return birthdaysList;
+        //Get the date today.
+        var today = DateTime.Today;
+        var todayInt = today.DayOfYear; //250
+        //Get the difference in date(in days)
+        int index = 0;
+        int smallestNumber = 365;
+        for (int i = 0; i < birthdaysList.Count; i++) 
+        {
+            birthdaysList[i] -= todayInt;
+            if (birthdaysList[i] > 0)
+                if (birthdaysList[i] < smallestNumber)
+                {
+                    smallestNumber = birthdaysList[i];
+                    index = i;
+                }
+        }
+        //find the smallest.
+        var date = (DateTime)allEmps[index].BirthDate;
+        return new { name = "nish", dob = date };
     }
 }
