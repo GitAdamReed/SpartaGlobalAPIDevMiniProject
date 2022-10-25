@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using APIMiniProject.Models;
 using APIMiniProject.Services;
 using APIMiniProject.Models.DTOs;
+using NuGet.Protocol;
 
 namespace APIMiniProject.Controllers;
 
@@ -35,17 +36,76 @@ public class EmployeesController : ControllerBase
         return Utils.EmployeeToEmployeeDTO(employee);
     }
 
+    // GET: api/Employees/5
+    //You MUST have LastName/ Here otherwise it will 
+    //Request multiple endpoints and break
+    [HttpGet("LastName/{lastName}")]
+    public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetEmployeesByLastName(string lastName)
+    {
+        var employees = await _employeeService.GetAllEmployeesAsync();
+        var employeesByName = employees
+            .Where(e => e.LastName == lastName)
+            .Select(e => Utils.EmployeeToEmployeeDTO(e))
+            .ToList();
+
+        return employeesByName;
+    }
+
+    // GET: api/Employees/5
+    [HttpGet("FirstName/{firstName}")]
+    public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetEmployeesByFirstName(string firstName)
+    {
+        var employees = await _employeeService.GetAllEmployeesAsync();
+        var employeesByName = employees
+            .Where(e => e.FirstName == firstName)
+            .Select(e => Utils.EmployeeToEmployeeDTO(e))
+            .ToList();
+
+        return employeesByName;
+    }
+
+    // GET: api/Employees/5
+    [HttpGet("ReportsTo/{id}")]
+    public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetEmployeesByReportsTo(int id)
+    {
+        var employees = await _employeeService.GetAllEmployeesAsync();
+        var employeesByBoss = employees
+            .Where(e => e.ReportsTo == id)
+            .Select(e => Utils.EmployeeToEmployeeDTO(e))
+            .ToList();
+
+        return employeesByBoss;
+    }
+
     // PUT: api/Employees/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutEmployee(int id, Employee employee)
+    public async Task<IActionResult> PutEmployee(int id, EmployeeDTO employee)
     {
         if (id != employee.EmployeeId) return BadRequest();
         if (!EmployeeExists(id)) return NotFound();
 
-        var emp = await _employeeService.FindByIdAsync(id);
+        var employeeToChange = await _employeeService.FindByIdAsync(id);
 
-        _employeeService.ModifyState(employee);
+        _employeeService.ModifyState(employeeToChange);
+
+        //I had to add these because we weren't actually changing anything
+        employeeToChange.LastName = employee.LastName ?? employeeToChange.LastName;
+        employeeToChange.FirstName = employee.FirstName ?? employeeToChange.FirstName;
+        employeeToChange.Title = employee.Title ?? employeeToChange.Title;
+        employeeToChange.TitleOfCourtesy = employee.TitleOfCourtesy ?? employeeToChange.TitleOfCourtesy;
+        employeeToChange.BirthDate = employee.BirthDate ?? employeeToChange.BirthDate;
+        employeeToChange.HireDate = employee.HireDate ?? employeeToChange.HireDate;
+        employeeToChange.Address = employee.Address ?? employeeToChange.Address;
+        employeeToChange.City = employee.City ?? employeeToChange.City;
+        employeeToChange.Region = employee.Region ?? employeeToChange.Region;
+        employeeToChange.PostalCode = employee.PostalCode ?? employeeToChange.PostalCode;
+        employeeToChange.Country = employee.Country ?? employeeToChange.Country;
+        employeeToChange.HomePhone = employee.HomePhone ?? employeeToChange.HomePhone;
+        employeeToChange.Extension = employee.Extension ?? employeeToChange.Extension;
+        employeeToChange.Notes = employee.Notes ?? employeeToChange.Notes;
+        employeeToChange.ReportsTo = employee.ReportsTo ?? employeeToChange.ReportsTo;
+        //employeeToChange.Territories = employee.Territories.Select(t => Utils.TerritoryToDTO(t));
 
         try
         {
@@ -63,14 +123,27 @@ public class EmployeesController : ControllerBase
             }
         }
 
-        return NoContent();
+        return CreatedAtAction(
+                nameof(GetEmployee),
+                new { id = employee.EmployeeId },
+                Utils.EmployeeToEmployeeDTO(await _employeeService.FindByIdAsync(id)));
     }
 
     // POST: api/Employees
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<EmployeeDTO>> PostEmployee(Employee employee)
+    public async Task<ActionResult<EmployeeDTO>> PostEmployee(EmployeeDTO employeeDTO)
     {
+        //Try to throw an error if User
+        //enters primary key in DTO?
+        //(proscribed)
+        if (employeeDTO.ToJson().Contains("employeeId"))
+        {
+            return BadRequest("Do not provide Primary Key employeeID; it will be generated for you");
+        }
+
+        var employee = Utils.EmployeeDTOToEmployee(employeeDTO);
+
         await _employeeService.CreateEmployeeAsync(employee);
         return CreatedAtAction("GetEmployee", new { id = employee.EmployeeId }, employee);
     }
@@ -102,8 +175,20 @@ public class EmployeesController : ControllerBase
         var birthdaysList = new List<DateTime>();
         var allEmps = _employeeService.GetAllEmployeesAsync().Result.ToList();
 
+<<<<<<< HEAD
         var empsBirthday = allEmps.Select(s => Utils.EmployeeToBirthdayDTO(s)).ToList();
         var ordered = empsBirthday.OrderBy(e => e.UpcomingBirthday).ToList();
         return ordered;
+=======
+        foreach (var e in allEmps)
+        {
+            difference = Math.Abs(e.BirthDate.Value.Ticks - today.Ticks);
+        }
+
+        allEmps.ForEach(e => birthdaysList.Add((DateTime)e.BirthDate));
+        birthdaysList.OrderByDescending(dt => dt.DayOfYear);
+
+        return birthdaysList;
+>>>>>>> dev
     }
 }
