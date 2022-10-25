@@ -17,7 +17,7 @@
 ```
 ### Adam R
 ```
-
+While working on this project, I, alongside Tudor, created the service layer tests and controller tests. To accomplish this we used Moq and Entity Framework. This project helped deepen my understanding of mocking and testing different layers.
 ```
 ### Sahil
 ```
@@ -27,7 +27,7 @@ Overall, working with my group allowed me to learn a lot and I would love to do 
 ```
 ### Tudor
 ```
-
+While working on this project, I, alongside Adam, created the service layer tests and controller tests. To accomplish this we used Moq and Entity Framework. This project helped deepen my understanding of mocking and testing different layers.
 ```
 ### Robert
 ```
