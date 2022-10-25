@@ -42,7 +42,6 @@ public class Utils
         {
             TerritoryId = territory.TerritoryId,
             TerritoryDescription = territory.TerritoryDescription
-
         };
 
     public static Employee EmployeeDTOToEmployee(EmployeeDTO employee) =>

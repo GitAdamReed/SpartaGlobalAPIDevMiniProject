@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using APIMiniProject.Models;
 using APIMiniProject.Services;
 using APIMiniProject.Models.DTOs;
 using NuGet.Protocol;
@@ -54,7 +53,6 @@ public class EmployeesController : ControllerBase
             .Where(e => e.LastName == lastName)
             .Select(e => Utils.EmployeeToEmployeeDTO(e))
             .ToList();
-
         return employeesByName;
     }
 
@@ -67,7 +65,6 @@ public class EmployeesController : ControllerBase
             .Where(e => e.FirstName == firstName)
             .Select(e => Utils.EmployeeToEmployeeDTO(e))
             .ToList();
-
         return employeesByName;
     }
 
@@ -80,7 +77,6 @@ public class EmployeesController : ControllerBase
             .Where(e => e.ReportsTo == id)
             .Select(e => Utils.EmployeeToEmployeeDTO(e))
             .ToList();
-
         return employeesByBoss;
     }
 
@@ -93,7 +89,6 @@ public class EmployeesController : ControllerBase
         if (!EmployeeExists(id)) return NotFound();
 
         var employeeToChange = await _employeeService.FindByIdAsync(id);
-
         _employeeService.ModifyState(employeeToChange);
 
         //I had to add these because we weren't actually changing anything
@@ -120,16 +115,9 @@ public class EmployeesController : ControllerBase
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!EmployeeExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
+            if (!EmployeeExists(id)) return NotFound();
+            else throw;
         }
-
         return CreatedAtAction(
                 nameof(GetEmployee),
                 new { id = employee.EmployeeId },
@@ -144,10 +132,7 @@ public class EmployeesController : ControllerBase
         //Try to throw an error if User
         //enters primary key in DTO?
         //(proscribed)
-        if (employeeDTO.ToJson().Contains("employeeId"))
-        {
-            return BadRequest("Do not provide Primary Key employeeID; it will be generated for you");
-        }
+        if (employeeDTO.ToJson().Contains("employeeId")) return BadRequest("Do not provide Primary Key employeeID; it will be generated for you");
 
         var employee = Utils.EmployeeDTOToEmployee(employeeDTO);
 
@@ -160,19 +145,13 @@ public class EmployeesController : ControllerBase
     public async Task<IActionResult> DeleteEmployee(int id)
     {
         var employee = await _employeeService.FindByIdAsync(id);
-        if (employee == null)
-        {
-            return NotFound();
-        }
+        if (employee == null) return NotFound();
 
         await _employeeService.DeleteEmployeeAsync(id);
         return NoContent();
     }
 
-    private bool EmployeeExists(int id)
-    {
-        return _employeeService.EmployeeExists(id);
-    }
+    private bool EmployeeExists(int id) => _employeeService.EmployeeExists(id);
 
     [HttpGet("Birthdays")]
     public async Task<ActionResult<IEnumerable<BirthdayDTO>>> GetBirthdaysNearest()
@@ -184,6 +163,5 @@ public class EmployeesController : ControllerBase
         var empsBirthday = allEmps.Select(s => Utils.EmployeeToBirthdayDTO(s)).ToList();
         var ordered = empsBirthday.OrderBy(e => e.UpcomingBirthday).ToList();
         return ordered;
-
     }
 }
