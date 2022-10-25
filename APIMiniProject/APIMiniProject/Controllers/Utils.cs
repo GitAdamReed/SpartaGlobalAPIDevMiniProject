@@ -23,25 +23,7 @@ public class Utils
             HomePhone = employee.HomePhone,
             Extension = employee.Extension,
             Notes = employee.Notes,
-            ReportsTo = employee.ReportsTo,
-            Territories = employee.Territories.Select(t => TerritoryToDTO(t)).ToList()
-        };
-
-    //We need this so that a user doesn't need 
-    //to put an overwhelming amount of information in 
-    //when using PUT
-    public static TerritoryDTO TerritoryToDTO(Territory territory) =>
-        new TerritoryDTO
-        {
-            TerritoryId = territory.TerritoryId,
-            TerritoryDescription = territory.TerritoryDescription
-        };
-
-    public static Territory DTOToTerritory(TerritoryDTO territory) =>
-        new Territory
-        {
-            TerritoryId = territory.TerritoryId,
-            TerritoryDescription = territory.TerritoryDescription
+            ReportsTo = employee.ReportsTo
         };
 
     public static Employee EmployeeDTOToEmployee(EmployeeDTO employee) =>
@@ -62,8 +44,7 @@ public class Utils
             HomePhone = employee.HomePhone,
             Extension = employee.Extension,
             Notes = employee.Notes,
-            ReportsTo = employee.ReportsTo,
-            Territories = employee.Territories.Select(t => DTOToTerritory(t)).ToList()
+            ReportsTo = employee.ReportsTo
         };
     public static BirthdayDTO EmployeeToBirthdayDTO(Employee employee) =>
        new BirthdayDTO
