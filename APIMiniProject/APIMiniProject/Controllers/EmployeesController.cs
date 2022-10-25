@@ -182,7 +182,24 @@ public class EmployeesController : ControllerBase
 =======
         foreach (var e in allEmps)
         {
-            difference = Math.Abs(e.BirthDate.Value.Ticks - today.Ticks);
+            var birthday = (DateTime)e.BirthDate;
+            birthdaysList.Add(birthday.DayOfYear); //100, 56, 88, 251, ...
+        }
+        //Get the date today.
+        var today = DateTime.Today;
+        var todayInt = today.DayOfYear; //250
+        //Get the difference in date(in days)
+        int index = 0;
+        int smallestNumber = 365;
+        for (int i = 0; i < birthdaysList.Count; i++) 
+        {
+            birthdaysList[i] -= todayInt;
+            if (birthdaysList[i] > 0)
+                if (birthdaysList[i] < smallestNumber)
+                {
+                    smallestNumber = birthdaysList[i];
+                    index = i;
+                }
         }
 
         allEmps.ForEach(e => birthdaysList.Add((DateTime)e.BirthDate));

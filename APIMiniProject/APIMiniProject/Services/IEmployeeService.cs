@@ -13,8 +13,8 @@ public interface IEmployeeService
     Task<Employee> FindByIdAsync(int id);
 
     //Create Employees - Returns ID of Employee.
-    int CreateEmployee(Employee employee); 
-    Task<int> CreateEmployeeAsync(Employee employee);
+    void CreateEmployee(Employee employee); 
+    Task CreateEmployeeAsync(Employee employee);
 
     //Delete Employee
     void DeleteEmployee(int id);
