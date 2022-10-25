@@ -77,6 +77,7 @@ public class EmployeesController : ControllerBase
             .Where(e => e.ReportsTo == id)
             .Select(e => Utils.EmployeeToEmployeeDTO(e))
             .ToList();
+        if (employeesByBoss == null) return NotFound();
         return employeesByBoss;
     }
 
