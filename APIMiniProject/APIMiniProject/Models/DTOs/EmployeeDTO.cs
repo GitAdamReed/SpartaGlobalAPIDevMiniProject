@@ -4,7 +4,7 @@ public class EmployeeDTO
 {
     public EmployeeDTO()
     {
-        Territories = new List<Territory>();
+        Territories = new List<TerritoryDTO>();
     }
 
     public int EmployeeId { get; set; }
@@ -23,5 +23,5 @@ public class EmployeeDTO
     public string? Extension { get; set; }
     public string? Notes { get; set; }
     public int? ReportsTo { get; set; }
-    public virtual ICollection<Territory> Territories { get; set; }
+    public virtual ICollection<TerritoryDTO> Territories { get; set; }
 }
