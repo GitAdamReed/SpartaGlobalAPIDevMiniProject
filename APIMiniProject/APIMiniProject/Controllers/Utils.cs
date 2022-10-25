@@ -65,6 +65,32 @@ public class Utils
             ReportsTo = employee.ReportsTo,
             Territories = employee.Territories.Select(t => DTOToTerritory(t)).ToList()
         };
+    public static BirthdayDTO EmployeeToBirthdayDTO(Employee employee) =>
+       new BirthdayDTO
+       {
+           FirstName = employee.FirstName,
+           LastName = employee.LastName,
+           BirthDate = employee.BirthDate,
+           UpcomingBirthday = GetUpcomingBirthday(employee),
+           Age = GetAge(employee)
+       };
+
+    private static DateTime GetUpcomingBirthday(Employee e)
+    {
+        DateTime today = DateTime.Today;
+        var diff = today.Year - e.BirthDate.Value.Year;
+        var birthday = e.BirthDate.Value.AddYears(diff);
+        if (birthday < today) birthday = birthday.AddYears(1);
+        return birthday;
+    }
+
+    private static int GetAge(Employee e)
+    {
+        var today = DateTime.Today;
+        var age = today.Year - e.BirthDate.Value.Year;
+        if (e.BirthDate.Value.Date > today.AddYears(-age)) age--;
+        return age;
+    }
 
     public static string DisplayWelcome()
     {

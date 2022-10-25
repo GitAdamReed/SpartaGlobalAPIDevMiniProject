@@ -154,7 +154,7 @@ public class EmployeesController : ControllerBase
     private bool EmployeeExists(int id) => _employeeService.EmployeeExists(id);
 
     [HttpGet("Birthdays")]
-    public async Task<ActionResult<IEnumerable<BirthdayDTO>>> GetBirthdaysNearest()
+    public async Task<ActionResult<IEnumerable<BirthdayDTO>>> GetBirthdays()
     {
         DateTime today = DateTime.Today;
 
