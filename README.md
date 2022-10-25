@@ -22,7 +22,7 @@ One thing I struggled with was implementing HATEOAS, which was part of our AC an
 ```
 ### Adam R
 ```
-
+While working on this project, I, alongside Tudor, created the service layer tests and controller tests. To accomplish this we used Moq and Entity Framework. This project helped deepen my understanding of mocking and testing different layers.
 ```
 ### Sahil
 ```
@@ -32,11 +32,11 @@ Overall, working with my group allowed me to learn a lot and I would love to do 
 ```
 ### Tudor
 ```
-
+While working on this project, I, alongside Adam, created the service layer tests and controller tests. To accomplish this we used Moq and Entity Framework. This project helped deepen my understanding of mocking and testing different layers.
 ```
 ### Robert
 ```
-
+This project helped to solidify my knowledge of APIs and LINQ methods. I helped to implement the birthday requst by creating a BirthdayDTO with only fields relating to employees age and thier birthday.
 ```
 
 <br>
