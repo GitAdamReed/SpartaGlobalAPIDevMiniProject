@@ -1,5 +1,6 @@
 # SpartaGlobalAPIDevMiniProject
 
+
 >### Root Application Url: https://localhost:7056/
 >### Swagger View Url: https://localhost:7056/swagger/index.html
 
@@ -13,7 +14,11 @@
 ```
 ### Michael
 ```
+Working on this project helped me to understand the praxis of API development and how powerful a tool Entity Framework can be when databasing. I tried to approach this project with a user's persepctive in mind, always developing and ideating against our end user's desires and requirements. In our case, our end user is the HR Manager of a company that was recently the subject of a scathing exposé, revealing a bully workplace culture connected to multiple underground corporate Fight Clubs. As part of an image rehabilitation campaign, they are very keen to make employees feel welcomed and appreciated, especially as it pertains to birthday celebrations. This is the purpose of our GetBirthdays request method. 
 
+I contributed to the formation of get requests, including the requests that return collections of employees by FirstName or LastName etc. I also helped to form and repair the put request for employees and pared down our data objects to correspond to the data that a HR Manager would need--removing photopath strings etc. 
+
+One thing I struggled with was implementing HATEOAS, which was part of our AC and DOD for many of our user stories. I added an employee Navigation request that yields a string with our bespoke API methods to help our end user as a substitute, but this is not hypermedia. I would have liked to successfully implement HATEOAS. I also had planned to include an array of type TerritoryDTO as part of our EmployeeDTO but I struggled to retrieve these successfully on GetRequests.
 ```
 ### Adam R
 ```
