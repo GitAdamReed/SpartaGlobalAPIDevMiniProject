@@ -168,7 +168,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpGet("Birthdays")]
-    public async Task<ActionResult<IEnumerable<BirthdayDTO>>> GetBirthdaysNearest()
+    public async Task<ActionResult<IEnumerable<BirthdayDTO>>> GetBirthdays()
     {
         DateTime today = DateTime.Today;
 
