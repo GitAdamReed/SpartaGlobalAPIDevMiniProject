@@ -40,12 +40,22 @@ Overall, working with my group allowed me to learn a lot and I would love to do 
 
 <br>
 
+>POST
+
+```html
+<POST> /api/Employees - Creates the given employees passed via the body of the <POST> request, in the 'Employees' Table.
+ ```
+
 >GET
 
 ```html
+<GET> /api/Employees/Navigation - Displays all the URL's and methods that have been implimented.
 <GET> /api/Employees - Retrieves all employees from the 'Employees' Table.
 <GET> /api/Employees/{<id>} - Retrieves employee associated with the <id>.
-<GET> /api/Employees/GetTheNearestBirthday - Retrieves a List of upcomming birthdays. 
+<GET> /api/Employees/LastName/{<LastName>} - Get all employees with the specified <LastName>.
+<GET> /api/Employees/FirstName/{<FirstName>} - Get all employees with the specified <FirstName>.
+<GET> /api/Employees/ReportsTo/{<id>} - Retrieves the employees who report to <id>.
+<GET> /api/Employees/Birthdays - Retrieves a List of upcomming birthdays. 
  ```
 
 >PUT
