@@ -73,7 +73,8 @@ public class Utils
            FirstName = employee.FirstName,
            LastName = employee.LastName,
            BirthDate = employee.BirthDate,
-           UpcomingBirthday = GetUpcomingBirthday(employee)
+           UpcomingBirthday = GetUpcomingBirthday(employee),
+           Age = GetAge(employee)
        };
 
     private static DateTime GetUpcomingBirthday(Employee e)
@@ -83,5 +84,13 @@ public class Utils
         var birthday = e.BirthDate.Value.AddYears(diff);
         if (birthday < today) birthday = birthday.AddYears(1);
         return birthday;
+    }
+
+    private static int GetAge(Employee e)
+    {
+        var today = DateTime.Today;
+        var age = today.Year - e.BirthDate.Value.Year;
+        if (e.BirthDate.Value.Date > today.AddYears(-age)) age--;
+        return age;
     }
 }

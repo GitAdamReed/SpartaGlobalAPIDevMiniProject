@@ -6,5 +6,6 @@
         public string LastName { get; set; } = null!;
         public DateTime? BirthDate { get; set; }
         public DateTime? UpcomingBirthday { get; set; }
+        public int Age { get; set; }
     }
 }
