@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using APIMiniProject.Models;
 using APIMiniProject.Services;
 using APIMiniProject.Models.DTOs;
 using NuGet.Protocol;
@@ -27,6 +26,13 @@ public class EmployeesController : ControllerBase
         return employeesDto;
     }
 
+    // GET: api/Employees
+    [HttpGet("Navigation")]
+    public ActionResult<string> GetNavigation()
+    {
+        return Utils.DisplayWelcome();
+    }
+
     // GET: api/Employees/5
     [HttpGet("{id}")]
     public async Task<ActionResult<EmployeeDTO>> GetEmployee(int id)
@@ -47,7 +53,6 @@ public class EmployeesController : ControllerBase
             .Where(e => e.LastName == lastName)
             .Select(e => Utils.EmployeeToEmployeeDTO(e))
             .ToList();
-
         return employeesByName;
     }
 
@@ -60,7 +65,6 @@ public class EmployeesController : ControllerBase
             .Where(e => e.FirstName == firstName)
             .Select(e => Utils.EmployeeToEmployeeDTO(e))
             .ToList();
-
         return employeesByName;
     }
 
@@ -73,7 +77,7 @@ public class EmployeesController : ControllerBase
             .Where(e => e.ReportsTo == id)
             .Select(e => Utils.EmployeeToEmployeeDTO(e))
             .ToList();
-
+        if (employeesByBoss == null) return NotFound();
         return employeesByBoss;
     }
 
@@ -86,7 +90,6 @@ public class EmployeesController : ControllerBase
         if (!EmployeeExists(id)) return NotFound();
 
         var employeeToChange = await _employeeService.FindByIdAsync(id);
-
         _employeeService.ModifyState(employeeToChange);
 
         //I had to add these because we weren't actually changing anything
@@ -105,7 +108,6 @@ public class EmployeesController : ControllerBase
         employeeToChange.Extension = employee.Extension ?? employeeToChange.Extension;
         employeeToChange.Notes = employee.Notes ?? employeeToChange.Notes;
         employeeToChange.ReportsTo = employee.ReportsTo ?? employeeToChange.ReportsTo;
-        //employeeToChange.Territories = employee.Territories.Select(t => Utils.TerritoryToDTO(t));
 
         try
         {
@@ -113,16 +115,9 @@ public class EmployeesController : ControllerBase
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!EmployeeExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
+            if (!EmployeeExists(id)) return NotFound();
+            else throw;
         }
-
         return CreatedAtAction(
                 nameof(GetEmployee),
                 new { id = employee.EmployeeId },
@@ -137,10 +132,7 @@ public class EmployeesController : ControllerBase
         //Try to throw an error if User
         //enters primary key in DTO?
         //(proscribed)
-        if (employeeDTO.ToJson().Contains("employeeId"))
-        {
-            return BadRequest("Do not provide Primary Key employeeID; it will be generated for you");
-        }
+        if (employeeDTO.ToJson().Contains("employeeId")) return BadRequest("Do not provide Primary Key employeeID; it will be generated for you");
 
         var employee = Utils.EmployeeDTOToEmployee(employeeDTO);
 
@@ -153,50 +145,23 @@ public class EmployeesController : ControllerBase
     public async Task<IActionResult> DeleteEmployee(int id)
     {
         var employee = await _employeeService.FindByIdAsync(id);
-        if (employee == null)
-        {
-            return NotFound();
-        }
+        if (employee == null) return NotFound();
 
         await _employeeService.DeleteEmployeeAsync(id);
         return NoContent();
     }
 
-    private bool EmployeeExists(int id)
-    {
-        return _employeeService.EmployeeExists(id);
-    }
+    private bool EmployeeExists(int id) => _employeeService.EmployeeExists(id);
 
-    [HttpGet("GetTheNearestBirthday")]
-    public ActionResult<object> GetTheNearestBirthday()
+    [HttpGet("Birthdays")]
+    public async Task<ActionResult<IEnumerable<BirthdayDTO>>> GetBirthdays()
     {
-        //Get all the employees.
+        DateTime today = DateTime.Today;
+
+        var birthdaysList = new List<DateTime>();
         var allEmps = _employeeService.GetAllEmployeesAsync().Result.ToList();
-        //Get their birthdays.
-        var birthdaysList = new List<int>();
-        foreach (var e in allEmps)
-        {
-            var birthday = (DateTime)e.BirthDate;
-            birthdaysList.Add(birthday.DayOfYear); //100, 56, 88, 251, ...
-        }
-        //Get the date today.
-        var today = DateTime.Today;
-        var todayInt = today.DayOfYear; //250
-        //Get the difference in date(in days)
-        int index = 0;
-        int smallestNumber = 365;
-        for (int i = 0; i < birthdaysList.Count; i++) 
-        {
-            birthdaysList[i] -= todayInt;
-            if (birthdaysList[i] > 0)
-                if (birthdaysList[i] < smallestNumber)
-                {
-                    smallestNumber = birthdaysList[i];
-                    index = i;
-                }
-        }
-        //find the smallest.
-        var date = (DateTime)allEmps[index].BirthDate;
-        return new { name = "nish", dob = date };
+        var empsBirthday = allEmps.Select(s => Utils.EmployeeToBirthdayDTO(s)).ToList();
+        var ordered = empsBirthday.OrderBy(e => e.UpcomingBirthday).ToList();
+        return ordered;
     }
 }
