@@ -164,15 +164,35 @@ namespace APITests
             };
 
             mockService.Setup(e => e.FindByIdAsync(newEmp.EmployeeId).Result).Returns(newEmp);
+            mockService.Setup(e => e.EmployeeExists(11)).Returns(true);
 
             _sut = new EmployeesController(mockService.Object);
-            StatusCodeResult result = (StatusCodeResult)_sut.PutEmployee(11, newEmpDTO).Result;
+            var result = _sut.PutEmployee(11, newEmpDTO).Result;
 
-            Assert.That(result.StatusCode, Is.EqualTo(201));
+            Assert.That(result, Is.InstanceOf<CreatedAtActionResult>());
 
             mockService.Verify(e => e.ModifyState(It.IsAny<Employee>()), Times.Once);
             mockService.Verify(e => e.SaveEmployeeChangesAsync(), Times.Once);
 
+        }
+
+        [Test]
+        public void PostEmployee_ReturnsCreatedAt_WithValidEmployee()
+        {
+            var mockService = new Mock<IEmployeeService>();
+            var newEmpDTO = new EmployeeDTO()
+            {          
+                LastName = "Reed"
+            };
+            var newEmp = new Employee()
+            {
+                LastName = "Reed"
+            };
+         
+            _sut = new EmployeesController(mockService.Object);
+            var result = _sut.PostEmployee(newEmpDTO).Result;
+
+            Assert.That(result, Is.InstanceOf<CreatedAtActionResult>());
         }
     }
 }
