@@ -77,6 +77,7 @@ public class EmployeesController : ControllerBase
             .Where(e => e.ReportsTo == id)
             .Select(e => Utils.EmployeeToEmployeeDTO(e))
             .ToList();
+        if (employeesByBoss == null) return NotFound();
         return employeesByBoss;
     }
 
@@ -107,7 +108,6 @@ public class EmployeesController : ControllerBase
         employeeToChange.Extension = employee.Extension ?? employeeToChange.Extension;
         employeeToChange.Notes = employee.Notes ?? employeeToChange.Notes;
         employeeToChange.ReportsTo = employee.ReportsTo ?? employeeToChange.ReportsTo;
-        //employeeToChange.Territories = employee.Territories.Select(t => Utils.TerritoryToDTO(t));
 
         try
         {
