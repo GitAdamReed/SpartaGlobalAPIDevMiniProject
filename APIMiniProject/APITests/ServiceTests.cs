@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace APITests
 {
-    public class Tests
+    public class ServiceTests
     {
         private NorthwindContext _context;
         private IEmployeeService _sut;
@@ -37,7 +37,8 @@ namespace APITests
             _context.SaveChanges();
         }
 
-        [Category("GetSupplier")]
+        [Category("FindById")]
+        [Category("Happy Path")]
         [Test]
         public async Task GivenAValidId_FindById_ReturnsCorrectEmployeeAsync()
         {
@@ -49,16 +50,17 @@ namespace APITests
             Assert.That(result.City, Is.EqualTo("Liverpool"));
         }
 
-        [Category("GetSupplier")]
+        [Category("FindById")]
+        [Category("Sad Path")]
         [Test]
-        public async Task GivenAnInvalidId_GetSupplier_ReturnsNullAsync()
+        public async Task GivenAnInvalidId_FindById_ReturnsNullAsync()
         {
             var result = _sut.FindByIdAsync(-1).Result;
 
             Assert.That(result, Is.Null);
         }
 
-        [Category("Supplier List")]
+        [Category("GetAllEmployees")]
         [Test]
         public void GetAllEmployees_ReturnsCorrectNumberOfEmployees()
         {
@@ -134,6 +136,15 @@ namespace APITests
             var result = _context.Employees.Where(s => s.EmployeeId == 1).FirstOrDefault();
 
             Assert.That(result, Is.Null);
+
+            // Clean Up
+            _context.Employees.Add(new Employee()
+            {
+                EmployeeId = 1,
+                FirstName = "John",
+                LastName = "Doe",
+                City = "Liverpool"
+            });
         }
 
         [Category("SupplierExists")]
