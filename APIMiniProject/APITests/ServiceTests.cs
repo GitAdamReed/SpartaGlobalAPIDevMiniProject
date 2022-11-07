@@ -37,12 +37,12 @@ namespace APITests
             _context.SaveChanges();
         }
 
-        [Category("FindById")]
+        [Category("FindByIdAsync")]
         [Category("Happy Path")]
         [Test]
-        public async Task GivenAValidId_FindById_ReturnsCorrectEmployeeAsync()
+        public async Task GivenAValidId_FindByIdAsync_ReturnsCorrectEmployee()
         {
-            var result = _sut.FindByIdAsync(1).Result;
+            var result = await _sut.FindByIdAsync(1);
 
             Assert.That(result, Is.TypeOf<Employee>());
             Assert.That(result.FirstName, Is.EqualTo("John"));
@@ -50,12 +50,12 @@ namespace APITests
             Assert.That(result.City, Is.EqualTo("Liverpool"));
         }
 
-        [Category("FindById")]
+        [Category("FindByIdAsync")]
         [Category("Sad Path")]
         [Test]
-        public async Task GivenAnInvalidId_FindById_ReturnsNullAsync()
+        public async Task GivenAnInvalidId_FindByIdAsync_ReturnsNull()
         {
-            var result = _sut.FindByIdAsync(-1).Result;
+            var result = await _sut.FindByIdAsync(-1);
 
             Assert.That(result, Is.Null);
         }
@@ -64,12 +64,12 @@ namespace APITests
         [Test]
         public void GetAllEmployees_ReturnsCorrectNumberOfEmployees()
         {
-            var supplierListLength = _context.Employees.Count();
+            var employeeListLength = _context.Employees.Count();
 
             var result = _sut.GetAllEmployees();
 
             Assert.That(result, Is.TypeOf<List<Employee>>());
-            Assert.That(result.Count, Is.EqualTo(supplierListLength));
+            Assert.That(result.Count, Is.EqualTo(employeeListLength));
         }
 
         //[Category("GetProductList")]
@@ -86,11 +86,11 @@ namespace APITests
         //    Assert.That(result.Count, Is.EqualTo(productsListLength));
         //}
 
-        [Category("CreateEmployee")]
+        [Category("CreateEmployeeAsync")]
         [Test]
-        public async Task GivenAValidSupplierObject_CreateEmployee_AddsTheSupplierToTheDatabase()
+        public async Task GivenAValidEmployeeObject_CreateEmployeeAsync_AddsTheEmployeeToTheDatabase()
         {
-            var newSupplier = new Employee
+            var newEmployee = new Employee
             {
                 EmployeeId = 3,
                 FirstName = "Rob",
@@ -98,36 +98,18 @@ namespace APITests
                 City = "Manchester"
             };
 
-            await _sut.CreateEmployeeAsync(newSupplier);
-            var supplier = _context.Employees.Where(s => s.EmployeeId == newSupplier.EmployeeId).FirstOrDefault();
+            await _sut.CreateEmployeeAsync(newEmployee);
+            var employee = _context.Employees.Where(s => s.EmployeeId == newEmployee.EmployeeId).FirstOrDefault();
 
-            Assert.That(supplier, Is.TypeOf<Employee>());
-            Assert.That(supplier.FirstName, Is.EqualTo("Rob"));
-            Assert.That(supplier.LastName, Is.EqualTo("Green"));
-            Assert.That(supplier.City, Is.EqualTo("Manchester"));
+            Assert.That(employee, Is.TypeOf<Employee>());
+            Assert.That(employee.FirstName, Is.EqualTo("Rob"));
+            Assert.That(employee.LastName, Is.EqualTo("Green"));
+            Assert.That(employee.City, Is.EqualTo("Manchester"));
         }
 
-        //[Category("CreateEmployee")]
-        //[Test]
-        //public async Task GivenAValidSupplierObject_CreateEmployee_ReturnsCorrectSupplierId()
-        //{
-        //    var newSupplier = new Supplier
-        //    {
-        //        SupplierId = 33,
-        //        CompanyName = "Sparta Global",
-        //        ContactName = "Another Supplier",
-        //        ContactTitle = "Mr",
-        //        City = "Manchester"
-        //    };
-
-        //    var result = _sut.CreateSupplier(newSupplier).Result;
-
-        //    Assert.That(result, Is.EqualTo(newSupplier.SupplierId));
-        //}
-
-        [Category("RemoveSupplier")]
+        [Category("DeleteEmployeeAsync")]
         [Test]
-        public async Task GivenAVaildId_DeleteEmployeeAsync_RemovesCorrectSupplier()
+        public async Task GivenAVaildId_DeleteEmployeeAsync_RemovesCorrectEmployee()
         {
             var employeeToRemove = _context.Employees.Where(s => s.EmployeeId == 1).FirstOrDefault().EmployeeId;
 
@@ -145,9 +127,11 @@ namespace APITests
                 LastName = "Doe",
                 City = "Liverpool"
             });
+            await _context.SaveChangesAsync();
         }
 
-        [Category("SupplierExists")]
+        [Category("EmployeeExistsAsync")]
+        [Category("Happy Path")]
         [Test]
         public void GivenAValidId_EmployeeExistsAsync_ReturnsTrue()
         {
@@ -156,7 +140,8 @@ namespace APITests
             Assert.That(result, Is.True);
         }
 
-        [Category("SupplierExists")]
+        [Category("EmployeeExistsAsync")]
+        [Category("Sad Path")]
         [Test]
         public void GivenAnInvalidId_EmployeeExistsAsync_ReturnsFalse()
         {
