@@ -194,5 +194,25 @@ namespace APITests
 
             Assert.That(result.Result, Is.InstanceOf<CreatedAtActionResult>());
         }
+
+        [Test]
+        public void GivenAValidId_DeleteEmployee_ReturnsNoContentResult()
+        {
+            var mockService = new Mock<IEmployeeService>();
+            int id = 1;
+            var emp = new Employee
+            {
+                EmployeeId = id
+            };
+
+            mockService.Setup(e => e.FindByIdAsync(id).Result).Returns(emp);
+
+            _sut = new EmployeesController(mockService.Object);
+            var result = _sut.DeleteEmployee(id).Result;
+
+            Assert.That(result, Is.InstanceOf<NoContentResult>());
+
+            mockService.Verify(e => e.DeleteEmployeeAsync(It.IsAny<int>()), Times.Once);
+        }
     }
 }
