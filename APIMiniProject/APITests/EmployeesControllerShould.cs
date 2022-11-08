@@ -148,7 +148,7 @@ namespace APITests
         }
 
         [Test]
-        public void PutEmployee_ReturnsCreatedAtActionRequest()
+        public void PutEmployee_ReturnsCreatedAtActionResult()
         {
             var mockService = new Mock<IEmployeeService>();
             var newEmp = new Employee()
@@ -177,7 +177,7 @@ namespace APITests
         }
 
         [Test]
-        public void PostEmployee_ReturnsCreatedAt_WithValidEmployee()
+        public void PostEmployee_ReturnsCreatedAtActionResult_WithValidEmployee()
         {
             var mockService = new Mock<IEmployeeService>();
             var newEmpDTO = new EmployeeDTO()
@@ -192,7 +192,7 @@ namespace APITests
             _sut = new EmployeesController(mockService.Object);
             var result = _sut.PostEmployee(newEmpDTO).Result;
 
-            Assert.That(result, Is.InstanceOf<CreatedAtActionResult>());
+            Assert.That(result.Result, Is.InstanceOf<CreatedAtActionResult>());
         }
     }
 }

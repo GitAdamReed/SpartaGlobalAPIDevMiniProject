@@ -35,6 +35,7 @@ public class EmployeesController : ControllerBase
 
     // GET: api/Employees/5
     [HttpGet("{id}")]
+    // ActionResult wraps both the object to be returned and an ActionResult status code
     public async Task<ActionResult<EmployeeDTO>> GetEmployee(int id)
     {
         var employee = await _employeeService.FindByIdAsync(id);
@@ -84,6 +85,7 @@ public class EmployeesController : ControllerBase
     // PUT: api/Employees/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
+    // IActionResult only returns a status code as opposed to ActionResult which returns a status code and an object
     public async Task<IActionResult> PutEmployee(int id, EmployeeDTO employee)
     {
         if (id != employee.EmployeeId) return BadRequest();
