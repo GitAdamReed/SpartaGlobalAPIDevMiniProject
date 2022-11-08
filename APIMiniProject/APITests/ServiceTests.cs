@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using APIMiniProject.Models;
 using APIMiniProject.Services;
 using NUnit.Framework;
+using System.Drawing;
 
 namespace APITests
 {
@@ -18,21 +19,34 @@ namespace APITests
             _context = new NorthwindContext(options);
             _sut = new EmployeeService(_context);
 
-            _context.Employees.Add(new Employee()
+            Employee newEmployee1 = new()
             {
                 EmployeeId = 1,
                 FirstName = "John",
                 LastName = "Doe",
-                City = "Liverpool"
-            });
+                City = "Liverpool",
+            };
 
-            _context.Employees.Add(new Employee()
+            Employee newEmployee2 = new()
             {
                 EmployeeId = 2,
                 FirstName = "Jane",
                 LastName = "Doe",
                 City = "London"
-            });
+            };
+
+            Territory newTerritory = new()
+            {
+                TerritoryId = "00001",
+                TerritoryDescription = "Merseyside",
+                RegionId = 1
+            };
+
+            newEmployee1.Territories.Add(newTerritory);
+
+            _context.Employees.Add(newEmployee1);
+
+            _context.Employees.Add(newEmployee2);
 
             _context.SaveChanges();
         }
@@ -72,20 +86,6 @@ namespace APITests
             Assert.That(result.Count, Is.EqualTo(employeeListLength));
         }
 
-        //[Category("GetProductList")]
-        //[Test]
-        //public void GivenAValidId_GetProductsList_ReturnsCorrectNumberOfProducts()
-        //{
-        //    var productsListLength = _context.Products
-        //        .Where(p => p.SupplierId == 31)
-        //        .Count();
-
-        //    var result = _sut.GetProductList(31);
-
-        //    Assert.That(result, Is.TypeOf<List<Product>>());
-        //    Assert.That(result.Count, Is.EqualTo(productsListLength));
-        //}
-
         [Category("CreateEmployeeAsync")]
         [Test]
         public async Task GivenAValidEmployeeObject_CreateEmployeeAsync_AddsTheEmployeeToTheDatabase()
@@ -120,13 +120,24 @@ namespace APITests
             Assert.That(result, Is.Null);
 
             // Clean Up
-            _context.Employees.Add(new Employee()
+            Employee newEmployee = new()
             {
                 EmployeeId = 1,
                 FirstName = "John",
                 LastName = "Doe",
-                City = "Liverpool"
-            });
+                City = "Liverpool",
+            };
+
+            Territory newTerritory = new()
+            {
+                TerritoryId = "00002",
+                TerritoryDescription = "Merseyside",
+                RegionId = 1
+            };
+
+            newEmployee.Territories.Add(newTerritory);
+            _context.Employees.Add(newEmployee);
+            
             await _context.SaveChangesAsync();
         }
 
@@ -148,6 +159,19 @@ namespace APITests
             var result = _sut.EmployeeExistsAsync(-1).Result;
 
             Assert.That(result, Is.False);
+        }
+
+        [Category("GetAllTerritoryFromOneEmployeeAsync")]
+        [TestCase(1)]
+        [TestCase(2)]
+        public async Task GivenAValidId_GetAllTerritoryFromOneEmployeeAsync_ReturnsCorrectNumberOfEmployees(int id)
+        {
+            var territoryListLength = _context.Employees.Find(id).Territories.Count;
+
+            var result = await _sut.GetAllTerritoryFromOneEmployeeAsync(id);
+
+            Assert.That(result, Is.TypeOf<List<Territory>>());
+            Assert.That(result.Count, Is.EqualTo(territoryListLength));
         }
 
         [OneTimeTearDown]

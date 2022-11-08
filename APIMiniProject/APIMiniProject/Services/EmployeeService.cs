@@ -29,6 +29,15 @@ public class EmployeeService : IEmployeeService
 
     public async Task DeleteEmployeeAsync(int id)
     {
+        var employeeToRemove = FindById(id);
+        // Get all Territories that belong to the Employee to delete
+        var employeeTerritories = employeeToRemove.Territories.ToList();
+        // Loop through Territories list and access each Territories' Employee list
+        // And remove the Employee from the list
+        foreach (var item in employeeTerritories)
+        {
+            item.Employees.Remove(employeeToRemove);
+        }
         _context.Employees.Remove(FindById(id));
         await _context.SaveChangesAsync();
     }
